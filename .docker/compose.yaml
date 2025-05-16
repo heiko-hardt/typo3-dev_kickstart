@@ -10,7 +10,7 @@ services:
                 TYPO3_PATH_APP /var/www/html/Public,
                 TYPO3_PATH_ROOT /var/www/html/Public,
                 TYPO3_PATH_WEB /var/www/html/Public"
-            XDEBUG_MODE: "debug,develop"
+            XDEBUG_MODE: "debug,develop,coverage"
         # image: hhdev/php:7.4-apache-dev
         # image: hhdev/php:8.0-apache-dev
         # image: hhdev/php:8.1-apache-dev
@@ -47,8 +47,8 @@ services:
         env_file: .env
         image: selenium/standalone-chrome:124.0
         ports:
-            - 8803:8800 # Apache httpd server
-            - 7903:7900 # Selenium server
+            - 88${COMPOSE_PROJECT_PORT}:8800 # Apache httpd server
+            - 79${COMPOSE_PROJECT_PORT}:7900 # Selenium server
         shm_size: 2gb
 
 volumes:
