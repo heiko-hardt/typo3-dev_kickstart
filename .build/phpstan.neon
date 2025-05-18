@@ -1,0 +1,23 @@
+# Based on: 
+# - https://github.com/TYPO3-Documentation/blog_example/blob/main/Build/phpstan/phpstan.neon
+# - https://github.com/TYPO3BestPractices/tea/blob/v3.1.0/phpstan.neon
+
+includes:
+    - phpstan-baseline.neon
+    - ../.run/vendor/saschaegerer/phpstan-typo3/extension.neon
+
+parameters:
+  level: 6
+
+  inferPrivatePropertyTypeFromConstructor: true
+  treatPhpDocTypesAsCertain: false
+
+  paths:
+    - ../Classes/
+    - ../Configuration/
+    - ../Tests/
+
+  tmpDir: ../.build/.phpstan.cache
+
+  excludePaths:
+    - ../Tests/Unit/DummyTest.php

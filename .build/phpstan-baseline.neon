@@ -1,0 +1,4 @@
+# Based on: https://github.com/TYPO3BestPractices/tea/blob/v3.1.0/phpstan-baseline.neon
+
+parameters:
+	ignoreErrors: []

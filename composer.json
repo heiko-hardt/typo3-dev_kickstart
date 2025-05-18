@@ -1,0 +1,127 @@
+{
+	"name": "heikohardt/dev-kickstart",
+	"description": "TYPO3 kickstart extension",
+	"authors": [
+		{
+			"name": "Heiko Hardt",
+			"email": "heiko@hardt.dev"
+		}
+	],
+	"type": "typo3-cms-extension",
+	"version": "0.1.0",
+	"license": [
+		"GPL-2.0-or-later"
+	],
+	"repositories": [
+		{
+			"type": "path",
+			"url": ".vendor/*",
+			"symlink": true
+		}
+	],
+	"require": {
+		"typo3/cms-core": "^13.4"
+	},
+	"require-dev": {
+		"typo3/cms-belog": "*",
+		"typo3/cms-fluid-styled-content": "*",
+		"typo3/cms-install": "*",
+		"typo3/cms-tstemplate": "*",
+
+		"helmich/typo3-typoscript-lint": "^3.3",
+		"phpmd/phpmd": "^2.15",
+		"saschaegerer/phpstan-typo3": "^2.1",
+		"squizlabs/php_codesniffer": "^3.7",
+		"ssch/typo3-rector": "^3.2",
+		"typo3/coding-standards": "^0.8",
+		"typo3/testing-framework": "^9.2",
+
+		"behat/behat": "^3.15",
+		"behat/mink": "^1.12",
+		"cawolf/behat-cucumber-json-formatter": "^1.5",
+		"friends-of-behat/mink-extension": "^2.x-dev",
+		"heikohardt/behat-typo3-extension": "^8.0",
+		"mink/webdriver-classic-driver": "^1.1",
+		
+		"fakerphp/faker": "^1.24",
+		"heikohardt/dev-template": "^3.0"
+	},
+	"autoload": {
+		"psr-4": {
+			"HeikoHardt\\DevKickstart\\": "Classes/"
+		}
+	},
+	"autoload-dev": {
+		"psr-4": {
+			"HeikoHardt\\DevKickstart\\Tests\\": "Tests/"
+		}
+	},
+	"scripts": {
+		"environment": [
+			"mkdir -p .reports/checkstyle",
+			"mkdir -p Public"
+		],
+		"qa": [
+			"@environment",
+			"@qa:static-code-analysis",
+			"@qa:test"
+		],
+		"qa:static-code-analysis": [
+			"@qa:sca:tslint",
+			"@qa:sca:phpcs",
+			"@qa:sca:phpmd",
+			"@qa:sca:phpstan"
+		],
+		"qa:test": [
+			"@qa:test:unit",
+			"@qa:test:functional",
+			"@qa:test:acceptance"
+		],
+		"qa:automatic-code-refactoring": [
+			"@qa:acr:rector",
+			"@qa:acr:cs-fixer"
+		],
+		"qa:sca:tslint": [
+			"typoscript-lint -c .build/typoscript-lint.yaml -f xml -o .reports/checkstyle/tslint.xml "
+		],
+		"qa:sca:phpcs": [
+			"phpcs -q --report=checkstyle --report-file=.reports/checkstyle/phpcs.xml --standard=.build/php-cs.xml Classes Tests"
+		],
+		"qa:sca:phpmd": [
+			"phpmd ./Classes,./Tests,./Configuration xml --reportfile .reports/phpmd.xml --suffixes php .build/phpmd.xml"
+		],
+		"qa:sca:phpstan": [
+			"phpstan analyse -c .build/phpstan.neon --error-format=checkstyle > ./.reports/checkstyle/phpstan.xml"
+		],		
+		"qa:test:unit": [
+			"phpunit -c .build/phpunit-unit.xml"
+		],
+		"qa:test:functional": [
+			"phpunit -c .build/phpunit-functional.xml"
+		],				
+		"qa:test:acceptance": [
+			"behat -c Tests/Acceptance/behat.yaml --format pretty"
+		],
+		"qa:acr:rector": [
+			"rector -c .build/rector.php"
+		],
+		"qa:acr:cs-fixer": [
+			"php-cs-fixer fix --config=.build/php-cs-fixer.php --using-cache=no"
+		]
+	},
+	"config": {
+		"allow-plugins": {
+			"typo3/cms-composer-installers": true,
+			"typo3/class-alias-loader": true
+		},
+		"bin-dir": ".run/bin",
+		"vendor-dir": ".run/vendor"
+	},
+	"extra": {
+		"typo3/cms": {
+			"cms-package-dir": "{$vendor-dir}/typo3/cms",
+			"extension-key": "dev_kickstart",
+			"web-dir": ".run/public"
+		}
+	}
+}
